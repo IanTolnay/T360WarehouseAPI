@@ -276,6 +276,7 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
+  schemas: {}
 
 security:
   - BearerAuth: []
