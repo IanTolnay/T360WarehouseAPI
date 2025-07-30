@@ -98,6 +98,12 @@ paths:
     post:
       operationId: updateSheetStructure
       summary: Remove columns from a sheet
+      parameters:
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -122,6 +128,12 @@ paths:
     post:
       operationId: setSheetHeaders
       summary: Set new headers for a sheet
+      parameters:
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -146,6 +158,12 @@ paths:
     post:
       operationId: createSheet
       summary: Create new tab
+      parameters:
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -169,6 +187,12 @@ paths:
     post:
       operationId: renameSheet
       summary: Rename tab
+      parameters:
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -191,6 +215,12 @@ paths:
     post:
       operationId: deleteSheet
       summary: Delete tab
+      parameters:
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -210,6 +240,12 @@ paths:
     post:
       operationId: writeSheetRow
       summary: Append row to sheet
+      parameters:
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -232,6 +268,12 @@ paths:
     post:
       operationId: updateSheetHeaders
       summary: Overwrite headers in sheet
+      parameters:
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -256,6 +298,12 @@ paths:
     post:
       operationId: logEvent
       summary: Write log to index
+      parameters:
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
