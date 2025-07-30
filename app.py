@@ -29,10 +29,13 @@ def require_write_key(f):
 @app.route("/sheet/write_row", methods=["POST"])
 @require_write_key
 def write_row():
-    data = request.get_json()
-    sheet_name = data.get("sheet_name")
-    item = data.get("item", {})
     try:
+        data = request.get_json(force=True)
+        print("🔍 DEBUG DATA RECEIVED:", data)
+
+        sheet_name = data.get("sheet_name")
+        item = data.get("item", {})
+
         worksheet = spreadsheet.worksheet(sheet_name)
         headers = worksheet.row_values(1)
         new_keys = [key for key in item.keys() if key not in headers]
@@ -40,10 +43,14 @@ def write_row():
             headers += new_keys
             worksheet.delete_rows(1)
             worksheet.insert_row(headers, 1)
+
         row = [item.get(header, "") for header in headers]
         worksheet.append_row(row)
+
         return jsonify({"message": "Row written", "row": row}), 200
+
     except Exception as e:
+        print("❌ WRITE ERROR:", str(e))
         return jsonify({"error": str(e)}), 500
 
 @app.route("/updateSheetHeaders", methods=["POST"])
