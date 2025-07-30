@@ -1,0 +1,266 @@
+openapi: 3.1.0
+info:
+  title: GPT Dev Log API
+  description: Full dev sheet access and structured logging support
+  version: "1.0"
+servers:
+  - url: https://gpt-dev-log-api.onrender.com
+paths:
+  /inventory/{sheet_name}:
+    get:
+      operationId: getInventoryBySheet
+      summary: Get all items from a specified sheet
+      parameters:
+        - name: sheet_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: All rows from the sheet
+
+  /inventory/headers/{sheet_name}:
+    get:
+      operationId: getSheetHeaders
+      summary: Get header row of a sheet
+      parameters:
+        - name: sheet_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Sheet headers
+
+  /inventory/structured/{sheet_name}:
+    get:
+      operationId: getStructuredSheet
+      summary: Get headers and rows separately
+      parameters:
+        - name: sheet_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Structured result
+
+  /inventory/item/{sheet_name}/{item_name}:
+    get:
+      operationId: getInventoryItemBySheet
+      summary: Get item by name from a sheet
+      parameters:
+        - name: sheet_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: item_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Item details
+
+  /location/{sheet_name}/{location_id}:
+    get:
+      operationId: getByLocationBySheet
+      summary: Get rows stored at a location
+      parameters:
+        - name: sheet_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: location_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Rows at location
+
+  /sheet/list_all:
+    get:
+      operationId: listAllSheets
+      summary: List all available sheets
+      responses:
+        "200":
+          description: Sheet list
+
+  /sheet/update_structure:
+    post:
+      operationId: updateSheetStructure
+      summary: Remove columns from a sheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                remove_columns:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Columns removed
+
+  /sheet/set_headers:
+    post:
+      operationId: setSheetHeaders
+      summary: Set new headers for a sheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                headers:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Headers set
+
+  /sheet/create:
+    post:
+      operationId: createSheet
+      summary: Create new tab
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sheet_name
+              properties:
+                sheet_name:
+                  type: string
+                headers:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Sheet created
+
+  /sheet/rename:
+    post:
+      operationId: renameSheet
+      summary: Rename tab
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - old_name
+                - new_name
+              properties:
+                old_name:
+                  type: string
+                new_name:
+                  type: string
+      responses:
+        "200":
+          description: Renamed
+
+  /sheet/delete:
+    post:
+      operationId: deleteSheet
+      summary: Delete tab
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sheet_name
+              properties:
+                sheet_name:
+                  type: string
+      responses:
+        "200":
+          description: Deleted
+
+  /sheet/write_row:
+    post:
+      operationId: writeSheetRow
+      summary: Append row to sheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                item:
+                  type: object
+      responses:
+        "200":
+          description: Row written
+
+  /updateSheetHeaders:
+    post:
+      operationId: updateSheetHeaders
+      summary: Overwrite headers in sheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                headers:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Headers replaced
+
+  /log:
+    post:
+      operationId: logEvent
+      summary: Write log to index
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item:
+                  type: object
+      responses:
+        "200":
+          description: Log written
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - BearerAuth: []

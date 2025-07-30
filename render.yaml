@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: gpt-dev-log-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: SPREADSHEET_ID
+        value: your_google_spreadsheet_id_here
+      - key: INVENTORY_WRITE_KEY
+        value: MASTER_KEY
