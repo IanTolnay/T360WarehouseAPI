@@ -104,6 +104,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - sheet_name
+                - remove_columns
               properties:
                 sheet_name:
                   type: string
@@ -125,6 +128,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - sheet_name
+                - headers
               properties:
                 sheet_name:
                   type: string
@@ -210,6 +216,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - sheet_name
+                - item
               properties:
                 sheet_name:
                   type: string
@@ -229,6 +238,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - sheet_name
+                - headers
               properties:
                 sheet_name:
                   type: string
@@ -250,6 +262,8 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - item
               properties:
                 item:
                   type: object
@@ -262,5 +276,6 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
+
 security:
   - BearerAuth: []
