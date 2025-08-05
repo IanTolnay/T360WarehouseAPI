@@ -3,10 +3,12 @@ from flask_cors import CORS
 import gspread
 import os
 import json
+import logging
 from functools import wraps
 
 app = Flask(__name__)
 CORS(app)
+logging.basicConfig(level=logging.DEBUG)
 
 # Load Google credentials
 with open("creds.json", "r") as f:
@@ -25,6 +27,17 @@ def require_write_key(f):
             return jsonify({"error": "Unauthorized"}), 401
         return f(*args, **kwargs)
     return decorated_function
+
+@app.before_request
+def log_all_requests():
+    try:
+        method = request.method
+        path = request.path
+        headers = dict(request.headers)
+        json_payload = request.get_json(silent=True)
+        logging.warning(f"🛰️ {method} {path} | Headers: {headers} | Body: {json_payload}")
+    except Exception as e:
+        logging.error(f"❌ Request logging failed: {str(e)}")
 
 @app.route("/sheet/write_row", methods=["POST"])
 @require_write_key
