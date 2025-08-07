@@ -10,6 +10,10 @@ app = Flask(__name__)
 CORS(app)
 logging.basicConfig(level=logging.DEBUG)
 
+@app.route("/", methods=["GET"])
+def index():
+    return jsonify({"status": "Worker API online"}), 200
+
 # Load Google credentials
 with open("creds.json", "r") as f:
     creds_dict = json.load(f)
