@@ -45,8 +45,17 @@ paths:
               properties:
                 sheet_name:
                   type: string
-              patternProperties:
-                ".*":
+                log_id:
+                  type: string
+                status:
+                  type: string
+                notes:
+                  type: string
+                timestamp:
+                  type: string
+                summary:
+                  type: string
+                action:
                   type: string
       security:
         - BearerAuth: []
@@ -138,11 +147,16 @@ paths:
             schema:
               type: object
               properties:
-                item:
-                  type: object
-                  patternProperties:
-                    ".*":
-                      type: string
+                timestamp:
+                  type: string
+                source:
+                  type: string
+                severity:
+                  type: string
+                message:
+                  type: string
+                details:
+                  type: string
       security:
         - BearerAuth: []
   /habits/update:
@@ -155,11 +169,14 @@ paths:
             schema:
               type: object
               properties:
-                sheet_name:
+                date:
                   type: string
-                item:
-                  type: object
-                  additionalProperties: true
+                habit:
+                  type: string
+                status:
+                  type: string
+                notes:
+                  type: string
       security:
         - BearerAuth: []
   /goals/update:
@@ -172,11 +189,16 @@ paths:
             schema:
               type: object
               properties:
-                sheet_name:
+                goal_name:
                   type: string
-                item:
-                  type: object
-                  additionalProperties: true
+                target_date:
+                  type: string
+                progress:
+                  type: string
+                status:
+                  type: string
+                priority:
+                  type: string
       security:
         - BearerAuth: []
   /mental_state/update:
@@ -189,11 +211,14 @@ paths:
             schema:
               type: object
               properties:
-                sheet_name:
+                date:
                   type: string
-                item:
-                  type: object
-                  additionalProperties: true
+                mood:
+                  type: string
+                energy:
+                  type: string
+                notes:
+                  type: string
       security:
         - BearerAuth: []
   /submitJournalV3:
