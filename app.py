@@ -39,7 +39,7 @@ def log_all_requests():
         path = request.path
         headers = dict(request.headers)
         json_payload = request.get_json(silent=True)
-        logging.warning(f"\U0001f6f8 {method} {path} | Headers: {headers} | Body: {json_payload}")
+        logging.warning(f"🛰️ {method} {path} | Headers: {headers} | Body: {json_payload}")
     except Exception as e:
         logging.error(f"❌ Request logging failed: {str(e)}")
 
@@ -48,8 +48,6 @@ def log_all_requests():
 def write_row():
     try:
         data = request.get_json(force=True)
-        print("🔍 DEBUG DATA RECEIVED:", data)
-
         sheet_name = data.get("sheet_name")
         item = data.get("item", {})
 
@@ -67,7 +65,6 @@ def write_row():
         return jsonify({"message": "Row written", "row": row}), 200
 
     except Exception as e:
-        print("❌ WRITE ERROR:", str(e))
         return jsonify({"error": str(e)}), 500
 
 @app.route("/sheet/write_passthrough", methods=["POST"])
@@ -94,6 +91,27 @@ def write_passthrough():
 
         return jsonify({"message": "Row written", "row": row}), 200
 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/sheet/write_passthrough_log", methods=["POST"])
+@require_write_key
+def write_passthrough_log():
+    try:
+        data = request.get_json(force=True)
+        log_sheet = spreadsheet.worksheet("3.3_Test_Sandbox")
+        headers = log_sheet.row_values(1)
+        new_keys = [key for key in data.keys() if key not in headers]
+
+        if new_keys:
+            headers += new_keys
+            log_sheet.delete_rows(1)
+            log_sheet.insert_row(headers, 1)
+
+        row = [data.get(header, "") for header in headers]
+        log_sheet.append_row(row)
+
+        return jsonify({"message": "Logged payload successfully", "data": data}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
