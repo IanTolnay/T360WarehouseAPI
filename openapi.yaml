@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Minimal API
+  title: Minimal API No Components
   version: "1.0"
 servers:
   - url: https://gpt-dev-log-api.onrender.com
@@ -23,10 +23,9 @@ paths:
                 item:
                   type: object
                   additionalProperties: true
-components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-security:
-  - BearerAuth: []
+      security:
+        - BearerAuth: []
+securitySchemes:
+  BearerAuth:
+    type: http
+    scheme: bearer
