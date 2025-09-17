@@ -16,15 +16,21 @@ paths:
               type: object
               required:
                 - sheet_name
-                - item
               properties:
                 sheet_name:
                   type: string
-                item:
-                  type: object
-                  patternProperties:
-                    ".*":
-                      type: string
+                Log ID:
+                  type: string
+                Status:
+                  type: string
+                Notes:
+                  type: string
+                Timestamp:
+                  type: string
+                Summary:
+                  type: string
+                Action:
+                  type: string
       security:
         - BearerAuth: []
   /sheet/write_passthrough_log:
