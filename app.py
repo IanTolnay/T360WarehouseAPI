@@ -39,7 +39,7 @@ def log_all_requests():
         path = request.path
         headers = dict(request.headers)
         json_payload = request.get_json(silent=True)
-        logging.warning(f"🛰️ {method} {path} | Headers: {headers} | Body: {json_payload}")
+        logging.warning(f"\U0001f6f8 {method} {path} | Headers: {headers} | Body: {json_payload}")
     except Exception as e:
         logging.error(f"❌ Request logging failed: {str(e)}")
 
@@ -68,6 +68,33 @@ def write_row():
 
     except Exception as e:
         print("❌ WRITE ERROR:", str(e))
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/sheet/write_passthrough", methods=["POST"])
+@require_write_key
+def write_passthrough():
+    try:
+        data = request.get_json(force=True)
+        sheet_name = data.get("sheet_name")
+        if not sheet_name:
+            return jsonify({"error": "Missing sheet_name"}), 400
+
+        item = {k: v for k, v in data.items() if k != "sheet_name"}
+
+        worksheet = spreadsheet.worksheet(sheet_name)
+        headers = worksheet.row_values(1)
+        new_keys = [key for key in item.keys() if key not in headers]
+        if new_keys:
+            headers += new_keys
+            worksheet.delete_rows(1)
+            worksheet.insert_row(headers, 1)
+
+        row = [item.get(header, "") for header in headers]
+        worksheet.append_row(row)
+
+        return jsonify({"message": "Row written", "row": row}), 200
+
+    except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @app.route("/updateSheetHeaders", methods=["POST"])
