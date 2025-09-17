@@ -128,6 +128,31 @@ def update_headers():
         return jsonify({"status": "headers updated"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+        
+@app.route("/sheet/get_headers", methods=["POST"])
+@require_write_key
+def get_sheet_headers():
+    data = request.get_json(force=True)
+    sheet_name = data.get("sheet_name")
+    try:
+        worksheet = spreadsheet.worksheet(sheet_name)
+        headers = worksheet.row_values(1)
+        return jsonify({"headers": headers}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/sheet/get_all", methods=["POST"])
+@require_write_key
+def get_all_sheet_data():
+    data = request.get_json(force=True)
+    sheet_name = data.get("sheet_name")
+    try:
+        worksheet = spreadsheet.worksheet(sheet_name)
+        all_data = worksheet.get_all_values()
+        return jsonify({"data": all_data}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route("/log", methods=["POST"])
 @require_write_key
