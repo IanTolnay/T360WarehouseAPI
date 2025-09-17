@@ -48,22 +48,30 @@ def log_all_requests():
 def write_row():
     try:
         data = request.get_json(force=True)
-        sheet_name = data.get("sheet_name")
-        item = data.get("item", {})
 
+        # ✅ Accept both "item" (structured) and flat JSON (passthrough)
+        if "item" in data:
+            item = data["item"]
+        else:
+            # Remove sheet_name if present, treat rest as item
+            item = {k: v for k, v in data.items() if k != "sheet_name"}
+
+        sheet_name = data.get("sheet_name")
         worksheet = spreadsheet.worksheet(sheet_name)
         headers = worksheet.row_values(1)
+
+        # Expand headers for new keys
         new_keys = [key for key in item.keys() if key not in headers]
         if new_keys:
             headers += new_keys
             worksheet.delete_rows(1)
             worksheet.insert_row(headers, 1)
 
+        # Build row in header order
         row = [item.get(header, "") for header in headers]
         worksheet.append_row(row)
 
         return jsonify({"message": "Row written", "row": row}), 200
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -101,17 +109,20 @@ def write_passthrough_log():
         data = request.get_json(force=True)
         log_sheet = spreadsheet.worksheet("3.3_Test_Sandbox")
         headers = log_sheet.row_values(1)
-        new_keys = [key for key in data.keys() if key not in headers]
 
+        # ✅ Accept all arbitrary keys (excluding reserved)
+        item = {k: v for k, v in data.items() if k not in ["sheet_name"]}
+
+        new_keys = [key for key in item.keys() if key not in headers]
         if new_keys:
             headers += new_keys
             log_sheet.delete_rows(1)
             log_sheet.insert_row(headers, 1)
 
-        row = [data.get(header, "") for header in headers]
+        row = [item.get(header, "") for header in headers]
         log_sheet.append_row(row)
 
-        return jsonify({"message": "Logged payload successfully", "data": data}), 200
+        return jsonify({"message": "Logged payload successfully", "row": row}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
