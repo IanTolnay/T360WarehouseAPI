@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: JIT Plugin – Passthrough Enabled
+  title: GPT Dev Log API with Logging Endpoint
   version: "1.0"
 servers:
   - url: https://gpt-dev-log-api.onrender.com
@@ -8,6 +8,23 @@ paths:
   /sheet/write_passthrough:
     post:
       operationId: writePassthrough
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sheet_name
+              properties:
+                sheet_name:
+                  type: string
+              additionalProperties: true
+      security:
+        - BearerAuth: []
+  /sheet/write_passthrough_log:
+    post:
+      operationId: writePassthroughLog
       requestBody:
         required: true
         content:
