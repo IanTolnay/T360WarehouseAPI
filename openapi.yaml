@@ -1,109 +1,15 @@
 openapi: 3.1.0
 info:
-  title: GPT Dev Log API
-  description: Full dev sheet access and structured logging support
+  title: GPT Development Log API
+  description: Unified schema for GPT endpoint interaction with Google Sheets
   version: "1.0"
 servers:
   - url: https://gpt-dev-log-api.onrender.com
 paths:
-  /inventory/{sheet_name}:
-    get:
-      operationId: getInventoryBySheet
-      summary: Get all items from a specified sheet
-      parameters:
-        - name: sheet_name
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: All rows from the sheet
-
-  /inventory/headers/{sheet_name}:
-    get:
-      operationId: getSheetHeaders
-      summary: Get header row of a sheet
-      parameters:
-        - name: sheet_name
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Sheet headers
-
-  /inventory/structured/{sheet_name}:
-    get:
-      operationId: getStructuredSheet
-      summary: Get headers and rows separately
-      parameters:
-        - name: sheet_name
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Structured result
-
-  /inventory/item/{sheet_name}/{item_name}:
-    get:
-      operationId: getInventoryItemBySheet
-      summary: Get item by name from a sheet
-      parameters:
-        - name: sheet_name
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: item_name
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Item details
-
-  /location/{sheet_name}/{location_id}:
-    get:
-      operationId: getByLocationBySheet
-      summary: Get rows stored at a location
-      parameters:
-        - name: sheet_name
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: location_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Rows at location
-
-  /sheet/list_all:
-    get:
-      operationId: listAllSheets
-      summary: List all available sheets
-      responses:
-        "200":
-          description: Sheet list
-
-  /sheet/update_structure:
+  /sheet/write_row:
     post:
-      operationId: updateSheetStructure
-      summary: Remove columns from a sheet
-      parameters:
-        - name: key
-          in: query
-          required: true
-          schema:
-            type: string
+      operationId: writeSheetRow
+      summary: Write a new row into a specified sheet
       requestBody:
         required: true
         content:
@@ -112,37 +18,98 @@ paths:
               type: object
               required:
                 - sheet_name
-                - remove_columns
+                - item
               properties:
                 sheet_name:
                   type: string
-                remove_columns:
-                  type: array
-                  items:
-                    type: string
+                item:
+                  type: object
       responses:
         "200":
-          description: Columns removed
+          description: Row written successfully
 
-  /sheet/set_headers:
+  /sheet/get_item:
     post:
-      operationId: setSheetHeaders
-      summary: Set new headers for a sheet
-      parameters:
-        - name: key
-          in: query
-          required: true
-          schema:
-            type: string
+      operationId: getInventoryItemBySheet
+      summary: Get a specific item from a sheet
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required:
-                - sheet_name
-                - headers
+              properties:
+                sheet_name:
+                  type: string
+                item_name:
+                  type: string
+      responses:
+        "200":
+          description: Item retrieved successfully
+
+  /sheet/get_headers:
+    post:
+      operationId: getSheetHeaders
+      summary: Retrieve headers from a sheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+      responses:
+        "200":
+          description: Headers retrieved
+
+  /sheet/get_all:
+    post:
+      operationId: getStructuredSheet
+      summary: Retrieve all data from a sheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+      responses:
+        "200":
+          description: All data retrieved
+
+  /sheet/get_by_location:
+    post:
+      operationId: getByLocationBySheet
+      summary: Get all rows for a specific location ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                location_id:
+                  type: string
+      responses:
+        "200":
+          description: Rows for location retrieved
+
+  /updateSheetHeaders:
+    post:
+      operationId: updateSheetHeaders
+      summary: Update the headers of a sheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
               properties:
                 sheet_name:
                   type: string
@@ -152,18 +119,109 @@ paths:
                     type: string
       responses:
         "200":
-          description: Headers set
+          description: Headers updated
+
+  /log:
+    post:
+      operationId: logEvent
+      summary: Log an event or system activity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                item:
+                  type: object
+      responses:
+        "200":
+          description: Log entry created
+
+  /habits/update:
+    post:
+      operationId: updateHabit
+      summary: Update or insert a habit record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                item:
+                  type: object
+      responses:
+        "200":
+          description: Habit entry recorded
+
+  /goals/update:
+    post:
+      operationId: updateGoal
+      summary: Update or insert a goal entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                item:
+                  type: object
+      responses:
+        "200":
+          description: Goal entry recorded
+
+  /mental_state/update:
+    post:
+      operationId: updateMentalState
+      summary: Update mental state log
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                item:
+                  type: object
+      responses:
+        "200":
+          description: Mental state entry recorded
+
+  /submitJournalV3:
+    post:
+      operationId: submitJournalEntry
+      summary: Submit a full journal entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                entry_data:
+                  type: object
+                write_key:
+                  type: string
+      responses:
+        "200":
+          description: Journal entry submitted
 
   /sheet/create:
     post:
       operationId: createSheet
-      summary: Create new tab
-      parameters:
-        - name: key
-          in: query
-          required: true
-          schema:
-            type: string
+      summary: Create a new sheet tab
       requestBody:
         required: true
         content:
@@ -182,17 +240,13 @@ paths:
       responses:
         "200":
           description: Sheet created
+        "400":
+          description: Missing name or invalid input
 
   /sheet/rename:
     post:
       operationId: renameSheet
-      summary: Rename tab
-      parameters:
-        - name: key
-          in: query
-          required: true
-          schema:
-            type: string
+      summary: Rename an existing sheet tab
       requestBody:
         required: true
         content:
@@ -209,18 +263,14 @@ paths:
                   type: string
       responses:
         "200":
-          description: Renamed
+          description: Sheet renamed
+        "400":
+          description: Error renaming sheet
 
   /sheet/delete:
     post:
       operationId: deleteSheet
-      summary: Delete tab
-      parameters:
-        - name: key
-          in: query
-          required: true
-          schema:
-            type: string
+      summary: Delete a sheet tab
       requestBody:
         required: true
         content:
@@ -234,97 +284,8 @@ paths:
                   type: string
       responses:
         "200":
-          description: Deleted
+          description: Sheet deleted
+        "400":
+          description: Deletion error
 
-  /sheet/write_row:
-    post:
-      operationId: writeSheetRow
-      summary: Append row to sheet
-      parameters:
-        - name: key
-          in: query
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - sheet_name
-                - item
-              properties:
-                sheet_name:
-                  type: string
-                item:
-                  type: object
-      responses:
-        "200":
-          description: Row written
-
-  /updateSheetHeaders:
-    post:
-      operationId: updateSheetHeaders
-      summary: Overwrite headers in sheet
-      parameters:
-        - name: key
-          in: query
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - sheet_name
-                - headers
-              properties:
-                sheet_name:
-                  type: string
-                headers:
-                  type: array
-                  items:
-                    type: string
-      responses:
-        "200":
-          description: Headers replaced
-
-  /log:
-    post:
-      operationId: logEvent
-      summary: Write log to index
-      parameters:
-        - name: key
-          in: query
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - item
-              properties:
-                item:
-                  type: object
-      responses:
-        "200":
-          description: Log written
-
-components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-  schemas: {}
-
-security:
-  - BearerAuth: []
+security: []
