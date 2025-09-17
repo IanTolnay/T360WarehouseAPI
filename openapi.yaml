@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: GPT Dev Log API - Full Endpoint Access
-  version: "1.3"
+  version: "1.4"
 servers:
   - url: https://gpt-dev-log-api.onrender.com
 paths:
@@ -16,12 +16,28 @@ paths:
               type: object
               required:
                 - sheet_name
-                - item
               properties:
                 sheet_name:
                   type: string
                 item:
                   type: object
+                  additionalProperties: true   # 👈 Accept arbitrary keys inside item
+              additionalProperties: false
+      security:
+        - BearerAuth: []
+  /sheet/write_passthrough_log:
+    post:
+      operationId: writePassthroughLog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+              additionalProperties: true   # 👈 Accept all arbitrary keys
       security:
         - BearerAuth: []
   /sheet/get_item:
@@ -114,6 +130,7 @@ paths:
               properties:
                 item:
                   type: object
+                  additionalProperties: true   # 👈 Logs can hold arbitrary fields
       security:
         - BearerAuth: []
   /habits/update:
@@ -130,6 +147,7 @@ paths:
                   type: string
                 item:
                   type: object
+                  additionalProperties: true
       security:
         - BearerAuth: []
   /goals/update:
@@ -146,6 +164,7 @@ paths:
                   type: string
                 item:
                   type: object
+                  additionalProperties: true
       security:
         - BearerAuth: []
   /mental_state/update:
@@ -162,6 +181,7 @@ paths:
                   type: string
                 item:
                   type: object
+                  additionalProperties: true
       security:
         - BearerAuth: []
   /submitJournalV3:
@@ -178,6 +198,7 @@ paths:
                   type: string
                 entry_data:
                   type: object
+                  additionalProperties: true
                 write_key:
                   type: string
       security:
