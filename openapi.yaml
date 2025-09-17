@@ -16,13 +16,15 @@ paths:
               type: object
               required:
                 - sheet_name
+                - item
               properties:
                 sheet_name:
                   type: string
                 item:
                   type: object
-                  additionalProperties: true   # 👈 Accept arbitrary keys inside item
-              additionalProperties: false
+                  patternProperties:
+                    ".*":
+                      type: string
       security:
         - BearerAuth: []
   /sheet/write_passthrough_log:
@@ -37,7 +39,9 @@ paths:
               properties:
                 sheet_name:
                   type: string
-              additionalProperties: true   # 👈 Accept all arbitrary keys
+              patternProperties:
+                ".*":
+                  type: string
       security:
         - BearerAuth: []
   /sheet/get_item:
@@ -130,7 +134,9 @@ paths:
               properties:
                 item:
                   type: object
-                  additionalProperties: true   # 👈 Logs can hold arbitrary fields
+                  patternProperties:
+                    ".*":
+                      type: string
       security:
         - BearerAuth: []
   /habits/update:
