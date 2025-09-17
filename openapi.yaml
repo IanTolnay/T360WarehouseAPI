@@ -1,13 +1,13 @@
 openapi: 3.1.0
 info:
-  title: Minimal API No Components
+  title: JIT Plugin – Passthrough Enabled
   version: "1.0"
 servers:
   - url: https://gpt-dev-log-api.onrender.com
 paths:
-  /sheet/write_row:
+  /sheet/write_passthrough:
     post:
-      operationId: writeSheetRow
+      operationId: writePassthrough
       requestBody:
         required: true
         content:
@@ -16,13 +16,10 @@ paths:
               type: object
               required:
                 - sheet_name
-                - item
               properties:
                 sheet_name:
                   type: string
-                item:
-                  type: object
-                  additionalProperties: true
+              additionalProperties: true
       security:
         - BearerAuth: []
 securitySchemes:
