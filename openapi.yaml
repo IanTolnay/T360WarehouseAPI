@@ -19,17 +19,17 @@ paths:
               properties:
                 sheet_name:
                   type: string
-                Log ID:
+                log_id:
                   type: string
-                Status:
+                status:
                   type: string
-                Notes:
+                notes:
                   type: string
-                Timestamp:
+                timestamp:
                   type: string
-                Summary:
+                summary:
                   type: string
-                Action:
+                action:
                   type: string
       security:
         - BearerAuth: []
