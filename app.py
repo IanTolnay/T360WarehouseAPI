@@ -49,11 +49,11 @@ def write_row():
     try:
         data = request.get_json(force=True)
 
-        # ✅ Accept both "item" (structured) and flat JSON (passthrough)
-        if "item" in data:
+        # ✅ Accept both item and flat payloads
+        if "item" in data and isinstance(data["item"], dict):
             item = data["item"]
         else:
-            # Remove sheet_name if present, treat rest as item
+            # Exclude sheet_name from being treated as a data field
             item = {k: v for k, v in data.items() if k != "sheet_name"}
 
         sheet_name = data.get("sheet_name")
@@ -67,7 +67,7 @@ def write_row():
             worksheet.delete_rows(1)
             worksheet.insert_row(headers, 1)
 
-        # Build row in header order
+        # Build row according to header order
         row = [item.get(header, "") for header in headers]
         worksheet.append_row(row)
 
