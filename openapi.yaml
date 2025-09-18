@@ -22,137 +22,137 @@ paths:
                   type: string
 
                 # Journal / Macro Logs
-                Unified Log ID:
+                unified_log_id:
                   type: string
-                Title:
+                title:
                   type: string
-                Summary:
+                summary:
                   type: string
-                Outcome:
+                outcome:
                   type: string
-                Linked Sheets:
+                linked_sheets:
                   type: string
-                Linked Log IDs:
+                linked_log_ids:
                   type: string
-                Author:
+                author:
                   type: string
-                Notes:
+                notes:
                   type: string
 
                 # Integration / GPT Logs
-                Timestamp:
+                timestamp:
                   type: string
-                Message:
+                message:
                   type: string
-                GPT:
+                gpt:
                   type: string
-                Context:
+                context:
                   type: string
-                Event:
+                event:
                   type: string
-                Action:
+                action:
                   type: string
-                Result:
+                result:
                   type: string
-                Details:
+                details:
                   type: string
 
                 # Event Triggers
-                Trigger Phrase:
+                trigger_phrase:
                   type: string
-                Detected By:
+                detected_by:
                   type: string
-                Target Action:
+                target_action:
                   type: string
-                Tags:
+                tags:
                   type: string
 
                 # Field Definitions
-                Field Name:
+                field_name:
                   type: string
-                Type:
+                type:
                   type: string
-                Required:
+                required:
                   type: string
-                Description:
+                description:
                   type: string
-                Default:
+                default:
                   type: string
-                Example:
+                example:
                   type: string
 
                 # GPT Verification / Validation
-                Test Case:
+                test_case:
                   type: string
-                Scenario:
+                scenario:
                   type: string
-                Expected Behavior:
+                expected_behavior:
                   type: string
-                Actual Behavior:
+                actual_behavior:
                   type: string
-                Expected:
+                expected:
                   type: string
-                Validated Output:
+                validated_output:
                   type: string
-                Validator:
+                validator:
                   type: string
-                Status:
+                status:
                   type: string
-                Comments:
+                comments:
                   type: string
 
                 # Schema Change Log
-                Sheet Affected:
+                sheet_affected:
                   type: string
-                Change Type:
+                change_type:
                   type: string
-                Before:
+                before:
                   type: string
-                After:
+                after:
                   type: string
-                Reason:
+                reason:
                   type: string
 
                 # Prototype Feedback
-                Test Context:
+                test_context:
                   type: string
-                Observation:
+                observation:
                   type: string
-                GPT Version:
+                gpt_version:
                   type: string
 
                 # Model Comparison
-                Test ID:
+                test_id:
                   type: string
-                Prompt:
+                prompt:
                   type: string
-                Response Summary:
+                response_summary:
                   type: string
-                Score:
+                score:
                   type: string
-                Reviewer Notes:
+                reviewer_notes:
                   type: string
 
                 # Sandbox
-                Col A:
+                col_a:
                   type: string
-                Col B:
+                col_b:
                   type: string
-                Col C:
+                col_c:
                   type: string
-                Col D:
+                col_d:
                   type: string
-                Col E:
+                col_e:
                   type: string
-                Col F:
+                col_f:
                   type: string
-                Col G:
+                col_g:
                   type: string
-                Col H:
+                col_h:
                   type: string
-                Col I:
+                col_i:
                   type: string
-                Test Marker:
+                test_marker:
                   type: string
                 log_id:
                   type: string
@@ -168,97 +168,87 @@ paths:
                   type: string
 
                 # Feature Log
-                Feature:
+                feature:
                   type: string
-                Date Added:
+                date_added:
                   type: string
-                Related Log ID:
+                related_log_id:
                   type: string
 
                 # Task Log
-                Task:
+                task:
                   type: string
-                Assigned To:
+                assigned_to:
                   type: string
-                Due Date:
+                due_date:
                   type: string
-                Priority:
+                priority:
                   type: string
-                Linked Log ID:
+                linked_log_id:
                   type: string
 
                 # Issue Queue
-                Issue ID:
+                issue_id:
                   type: string
-                Description:
-                  type: string
-                Severity:
-                  type: string
-                Date Reported:
-                  type: string
-                Logged By:
-                  type: string
-                Resolution Log ID:
-                  type: string
-
-                # Dashboard
-                Log ID:
-                  type: string
-                Log Type:
-                  type: string
-                Next Action:
-                  type: string
-
-                # Daily Summary
-                Date:
-                  type: string
-                GPT Notes:
-                  type: string
-                Highlights:
-                  type: string
-                Next Actions:
-                  type: string
-                Linked Logs:
-                  type: string
-
-                # Metrics Tracker
-                Logs Created:
-                  type: string
-                Errors Logged:
-                  type: string
-                Tasks Completed:
-                  type: string
-                Open Issues:
-                  type: string
-                Comments:
-                  type: string
-
-                # System-style logs (from 4.5_Log_Index)
-                source:
+                description:
                   type: string
                 severity:
                   type: string
-                message:
+                date_reported:
                   type: string
-                details:
+                logged_by:
+                  type: string
+                resolution_log_id:
                   type: string
 
-                # 🔮 Extra useful fields (future-proofing)
-                Category:
+                # Dashboard
+                log_id:
                   type: string
-                Owner:
+                log_type:
                   type: string
-                Reviewer:
+                next_action:
                   type: string
-                Version:
+
+                # Daily Summary
+                date:
                   type: string
-                Environment:
+                gpt_notes:
                   type: string
-                Location:
+                highlights:
                   type: string
-                Duration:
+                next_actions:
                   type: string
-                Outcome Detail:
+                linked_logs:
+                  type: string
+
+                # Metrics Tracker
+                logs_created:
+                  type: string
+                errors_logged:
+                  type: string
+                tasks_completed:
+                  type: string
+                open_issues:
+                  type: string
+                comments:
+                  type: string
+
+                # Extra useful fields (future-proofing)
+                category:
+                  type: string
+                owner:
+                  type: string
+                reviewer:
+                  type: string
+                version:
+                  type: string
+                environment:
+                  type: string
+                location:
+                  type: string
+                duration:
+                  type: string
+                outcome_detail:
                   type: string
       security:
         - BearerAuth: []
