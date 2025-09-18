@@ -24,6 +24,8 @@ paths:
                 # Journal / Macro Logs
                 unified_log_id:
                   type: string
+                origin_sheet:
+                  type: string
                 title:
                   type: string
                 summary:
