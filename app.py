@@ -330,6 +330,39 @@ def rename_sheet():
         return jsonify({"message": f"Renamed {old_name} to {new_name}"})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+        
+@app.route("/sheet/get_by_location", methods=["POST"])
+@require_write_key
+def get_by_location():
+    try:
+        data = request.get_json(force=True)
+        sheet_name = data.get("sheet_name")
+        location_id = data.get("location_id")
+
+        if not sheet_name or not location_id:
+            return jsonify({"error": "Missing sheet_name or location_id"}), 400
+
+        worksheet = spreadsheet.worksheet(sheet_name)
+        headers = worksheet.row_values(1)
+        all_values = worksheet.get_all_values()[1:]  # skip header
+
+        match_index = None
+        if "unified_log_id" in headers:
+            id_index = headers.index("unified_log_id")
+            for i, row in enumerate(all_values):
+                if len(row) > id_index and row[id_index] == location_id:
+                    match_index = i + 2  # +2 to adjust for 0-based index and header row
+                    break
+
+        if match_index:
+            matched_row = worksheet.row_values(match_index)
+            result = {headers[i]: matched_row[i] if i < len(matched_row) else "" for i in range(len(headers))}
+            return jsonify(result), 200
+        else:
+            return jsonify({"error": "No matching unified_log_id found"}), 404
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/openapi.yaml")
 def openapi_spec():
