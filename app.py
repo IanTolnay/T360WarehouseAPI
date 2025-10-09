@@ -6,13 +6,21 @@ import json
 import logging
 import base64
 from functools import wraps
+import io
 
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 from google.oauth2 import service_account
-import io
+
+# --- Structured Logging Configuration ---
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
+)
+logger = logging.getLogger("t360-api")
+
 # Import the upload blueprint
-from file_upload import upload_bp
+from file_uploads import upload_bp
 
 def upload_screenshot_to_drive(file_bytes, filename, folder_id):
     SCOPES = ['https://www.googleapis.com/auth/drive.file']
@@ -35,9 +43,11 @@ def upload_screenshot_to_drive(file_bytes, filename, folder_id):
 
 app = Flask(__name__)
 CORS(app)
-logging.basicConfig(level=logging.DEBUG)
+
 # Register the upload blueprint
 app.register_blueprint(upload_bp)
+
+logger.info("✅ Flask app initialized and upload blueprint registered.") 
 
 @app.route("/", methods=["GET"])
 def index():
