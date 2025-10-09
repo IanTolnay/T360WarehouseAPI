@@ -526,6 +526,35 @@ paths:
           description: A list of sheet names
       security:
         - BearerAuth: []
+  /upload/screenshot:
+    post:
+      operationId: uploadScreenshot
+      summary: Uploads a screenshot to Google Drive and returns a public URL
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                screenshot:
+                  type: string
+                  format: binary
+                  description: The image file to upload
+      responses:
+        '200':
+          description: Upload successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    description: Link to the uploaded screenshot on Google Drive
+        '500':
+          description: Upload failed due to server error
 securitySchemes:
   BearerAuth:
     type: http
