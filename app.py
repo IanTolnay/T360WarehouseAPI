@@ -6,6 +6,30 @@ import json
 import logging
 from functools import wraps
 
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
+from google.oauth2 import service_account
+import io
+
+def upload_screenshot_to_drive(file_bytes, filename, folder_id):
+    SCOPES = ['https://www.googleapis.com/auth/drive.file']
+    creds = service_account.Credentials.from_service_account_file("creds.json", scopes=SCOPES)
+    service = build('drive', 'v3', credentials=creds)
+
+    file_metadata = {
+        'name': filename,
+        'parents': [folder_id]
+    }
+
+    media = MediaIoBaseUpload(io.BytesIO(file_bytes), mimetype='image/png')
+    uploaded = service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields='id,webViewLink'
+    ).execute()
+
+    return uploaded.get('webViewLink')
+
 app = Flask(__name__)
 CORS(app)
 logging.basicConfig(level=logging.DEBUG)
@@ -72,6 +96,20 @@ def write_row():
         worksheet.append_row(row)
 
         return jsonify({"message": "Row written", "row": row}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/upload/screenshot", methods=["POST"])
+@require_write_key
+def upload_screenshot():
+    try:
+        image_file = request.files['screenshot']
+        file_bytes = image_file.read()
+        filename = image_file.filename
+        folder_id = os.environ.get("DRIVE_FOLDER_ID")
+
+        link = upload_screenshot_to_drive(file_bytes, filename, folder_id)
+        return jsonify({"url": link}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
