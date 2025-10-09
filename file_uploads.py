@@ -5,10 +5,17 @@ and routes them automatically to the correct Drive folder.
 """
 
 import os
+import logging
+
 from flask import Blueprint, request, jsonify
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2 import service_account
+
+# ---------------------------------------------------------------------
+# Logging Setup
+# ---------------------------------------------------------------------
+logger = logging.getLogger("t360-api")
 
 # ---------------------------------------------------------------------
 # Blueprint Initialization
@@ -56,46 +63,44 @@ def detect_folder(filename: str) -> str:
 # ---------------------------------------------------------------------
 @upload_bp.route("/upload/file", methods=["POST"])
 def upload_file():
-    """
-    Uploads a file to Google Drive with optional folder detection.
-    Expected form-data:
-      - file: the file itself
-      - folder_id (optional): override destination folder
-    """
     try:
         uploaded_file = request.files.get("file")
         if not uploaded_file:
             return jsonify({"error": "No file provided"}), 400
 
-        # Choose target folder
         folder_id = request.form.get("folder_id") or detect_folder(uploaded_file.filename)
-
-        # Save temporarily
         temp_path = os.path.join("/tmp", uploaded_file.filename)
         uploaded_file.save(temp_path)
 
-        # Upload to Drive
-        media = MediaFileUpload(temp_path, resumable=True)
+        media = MediaFileUpload(temp_path, mimetype=uploaded_file.mimetype, resumable=True)
         metadata = {"name": uploaded_file.filename, "parents": [folder_id]}
+
         uploaded = drive_service.files().create(
-            body=metadata, media_body=media, fields="id,webViewLink"
+            body=metadata, media_body=media, fields="id, name, parents, webViewLink"
         ).execute()
 
-        # Cleanup temp file
         os.remove(temp_path)
 
-        # Return the result
-        return jsonify(
-            {
-                "status": "success",
-                "file_id": uploaded.get("id"),
-                "url": uploaded.get("webViewLink"),
-                "folder_used": folder_id,
-            }
-        ), 200
+        # Log detailed response for Render logs
+        logger.info(f"Drive upload response: {uploaded}")
+
+        return jsonify({
+            "status": "success",
+            "file_id": uploaded.get("id"),
+            "url": uploaded.get("webViewLink"),
+            "folder_used": folder_id,
+            "drive_response": uploaded
+        }), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        import traceback
+        err_trace = traceback.format_exc()
+        logger.error(f"Drive upload failed: {e}\n{err_trace}")
+        return jsonify({
+            "status": "error",
+            "message": str(e),
+            "traceback": err_trace
+        }), 500
 
 
 @upload_bp.route("/health/drive", methods=["GET"])
