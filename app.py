@@ -11,6 +11,8 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 from google.oauth2 import service_account
 import io
+# Import the upload blueprint
+from file_upload import upload_bp
 
 def upload_screenshot_to_drive(file_bytes, filename, folder_id):
     SCOPES = ['https://www.googleapis.com/auth/drive.file']
@@ -34,6 +36,8 @@ def upload_screenshot_to_drive(file_bytes, filename, folder_id):
 app = Flask(__name__)
 CORS(app)
 logging.basicConfig(level=logging.DEBUG)
+# Register the upload blueprint
+app.register_blueprint(upload_bp)
 
 @app.route("/", methods=["GET"])
 def index():

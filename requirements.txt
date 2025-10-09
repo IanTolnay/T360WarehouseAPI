@@ -5,3 +5,5 @@ python-dotenv==1.0.0
 flask-cors
 gunicorn
 google-api-python-client
+google-auth
+google-auth-oauthlib
