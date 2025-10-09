@@ -3,7 +3,7 @@ info:
   title: GPT Dev Log API - Full Endpoint Access
   version: "1.4"
 servers:
-  - url: https://gpt-dev-log-api.onrender.com
+  - url: https://flask-inventory-api.onrender.com
 paths:
   /sheet/write_row:
     post:
