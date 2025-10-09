@@ -289,44 +289,6 @@ paths:
       security:
         - BearerAuth: []
 
-  /upload/base64:
-    post:
-      operationId: uploadBase64Screenshot
-      summary: Uploads a base64-encoded image to Google Drive
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                base64_data:
-                  type: string
-                  description: The base64-encoded image content
-                filename:
-                  type: string
-                  description: Optional filename (e.g. screenshot-20251009.png)
-                folder_id:
-                  type: string
-                  description: Google Drive folder ID for upload
-      responses:
-        '200':
-          description: Upload successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  url:
-                    type: string
-                    description: Public Drive link to the uploaded file
-        '400':
-          description: Bad request
-        '500':
-          description: Server error
-      security:
-        - BearerAuth: []
-
   /upload/screenshot:
     post:
       operationId: uploadScreenshot
@@ -614,6 +576,110 @@ paths:
           description: A list of sheet names
       security:
         - BearerAuth: []
+  /upload/file:
+    post:
+      summary: Upload a file to Google Drive and return its Drive link
+      description: Uploads an image or document via multipart/form-data and stores it in the correct folder in Google Drive.
+      operationId: uploadFile
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File to upload
+                folder_id:
+                  type: string
+                  description: Optional Google Drive folder ID override
+      responses:
+        '200':
+          description: Successful upload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  file_id:
+                    type: string
+                  url:
+                    type: string
+                  folder_used:
+                    type: string
+                  drive_response:
+                    type: object
+        '400':
+          description: Missing file or invalid input
+        '500':
+          description: Internal server error during upload
+
+  /health/drive:
+    get:
+      summary: Check Google Drive API connectivity
+      description: Runs a health check to confirm the service account can access the Drive folder.
+      operationId: driveHealth
+      parameters:
+        - name: folder_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Optional folder ID to test
+      responses:
+        '200':
+          description: Successful check
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  folder_checked:
+                    type: string
+                  files_found:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+        '500':
+          description: Connectivity or permission error
+
+  /health/sheets:
+    get:
+      summary: Check Google Sheets API connectivity
+      description: Reads the first row of the configured spreadsheet to verify Sheets API access.
+      operationId: sheetsHealth
+      responses:
+        '200':
+          description: Successful check
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  spreadsheet_id:
+                    type: string
+                  sheet_name:
+                    type: string
+                  headers_preview:
+                    type: array
+                    items:
+                      type: string
+        '500':
+          description: Connectivity or authentication failure
 
 securitySchemes:
   BearerAuth:
