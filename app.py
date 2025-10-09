@@ -212,7 +212,7 @@ def get_all_sheet_data():
 @require_write_key
 def log_event():
     data = request.json
-    data["sheet_name"] = "4.5_Log_Index"
+    data["sheet_name"] = "3.5_log_index"
     return write_row()
 
 @app.route("/integration/log", methods=["POST"])
