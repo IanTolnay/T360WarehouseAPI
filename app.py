@@ -103,9 +103,14 @@ def write_row():
 @require_write_key
 def upload_screenshot():
     try:
+        from datetime import datetime
+
         image_file = request.files['screenshot']
         file_bytes = image_file.read()
-        filename = image_file.filename
+
+        # Auto-name file if none provided
+        timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
+        filename = request.form.get("filename") or f"screenshot-{timestamp}.png"
         folder_id = os.environ.get("DRIVE_FOLDER_ID")
 
         link = upload_screenshot_to_drive(file_bytes, filename, folder_id)

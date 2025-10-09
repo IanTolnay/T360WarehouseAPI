@@ -254,6 +254,12 @@ paths:
                   type: string
                 description:
                   type: string
+                captured_text:
+                  type: string
+                  description: Text extracted from uploaded image via OCR
+                reference_images:
+                  type: string
+                  description: One or more image URLs (comma-separated if multiple)
       security:
         - BearerAuth: []
   /sheet/write_passthrough_log:
