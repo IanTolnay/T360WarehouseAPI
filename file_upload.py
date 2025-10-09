@@ -18,7 +18,7 @@ upload_bp = Blueprint("upload_bp", __name__)
 # ---------------------------------------------------------------------
 # Google Drive Configuration
 # ---------------------------------------------------------------------
-SERVICE_ACCOUNT_FILE = "service-account.json"  # Path to your service account key
+SERVICE_ACCOUNT_FILE = "/etc/secrets/creds.json"  # Path to your service account key
 SCOPES = ["https://www.googleapis.com/auth/drive.file"]
 
 creds = service_account.Credentials.from_service_account_file(

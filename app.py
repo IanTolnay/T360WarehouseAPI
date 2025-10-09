@@ -16,7 +16,7 @@ from file_upload import upload_bp
 
 def upload_screenshot_to_drive(file_bytes, filename, folder_id):
     SCOPES = ['https://www.googleapis.com/auth/drive.file']
-    creds = service_account.Credentials.from_service_account_file("creds.json", scopes=SCOPES)
+    creds = service_account.Credentials.from_service_account_file("/etc/secrets/creds.json", scopes=SCOPES)
     service = build('drive', 'v3', credentials=creds)
 
     file_metadata = {
