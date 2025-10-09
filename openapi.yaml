@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: GPT Dev Log API - Full Endpoint Access
-  version: "1.4"
+  version: "1.5"
 servers:
   - url: https://flask-inventory-api.onrender.com
 paths:
@@ -21,7 +21,6 @@ paths:
               required:
                 - sheet_name
               properties:
-
                 # === CORE & UNIVERSAL FIELDS ===
                 sheet_name:
                   type: string
@@ -262,6 +261,7 @@ paths:
                   description: One or more image URLs (comma-separated if multiple)
       security:
         - BearerAuth: []
+
   /sheet/write_passthrough_log:
     post:
       operationId: writePassthroughLog
@@ -288,9 +288,11 @@ paths:
                   type: string
       security:
         - BearerAuth: []
-  /sheet/get_item:
+
+  /upload/base64:
     post:
-      operationId: getInventoryItemBySheet
+      operationId: uploadBase64Screenshot
+      summary: Uploads a base64-encoded image to Google Drive
       requestBody:
         required: true
         content:
@@ -298,240 +300,33 @@ paths:
             schema:
               type: object
               properties:
-                sheet_name:
+                base64_data:
                   type: string
-                item_name:
+                  description: The base64-encoded image content
+                filename:
                   type: string
-      security:
-        - BearerAuth: []
-  /sheet/get_headers:
-    post:
-      operationId: getSheetHeaders
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                sheet_name:
+                  description: Optional filename (e.g. screenshot-20251009.png)
+                folder_id:
                   type: string
-      security:
-        - BearerAuth: []
-  /sheet/get_all:
-    post:
-      operationId: getStructuredSheet
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                sheet_name:
-                  type: string
-      security:
-        - BearerAuth: []
-  /sheet/get_by_location:
-    post:
-      operationId: getByLocationBySheet
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                sheet_name:
-                  type: string
-                location_id:
-                  type: string
-      security:
-        - BearerAuth: []
-  /updateSheetHeaders:
-    post:
-      operationId: updateSheetHeaders
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                sheet_name:
-                  type: string
-                headers:
-                  type: array
-                  items:
-                    type: string
-      security:
-        - BearerAuth: []
-  /log:
-    post:
-      operationId: logEvent
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                timestamp:
-                  type: string
-                source:
-                  type: string
-                severity:
-                  type: string
-                message:
-                  type: string
-                details:
-                  type: string
-      security:
-        - BearerAuth: []
-  /habits/update:
-    post:
-      operationId: updateHabit
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                date:
-                  type: string
-                habit:
-                  type: string
-                status:
-                  type: string
-                notes:
-                  type: string
-      security:
-        - BearerAuth: []
-  /goals/update:
-    post:
-      operationId: updateGoal
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                goal_name:
-                  type: string
-                target_date:
-                  type: string
-                progress:
-                  type: string
-                status:
-                  type: string
-                priority:
-                  type: string
-      security:
-        - BearerAuth: []
-  /mental_state/update:
-    post:
-      operationId: updateMentalState
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                date:
-                  type: string
-                mood:
-                  type: string
-                energy:
-                  type: string
-                notes:
-                  type: string
-      security:
-        - BearerAuth: []
-  /submitJournalV3:
-    post:
-      operationId: submitJournalEntry
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                sheet_name:
-                  type: string
-                entry_data:
-                  type: object
-                  additionalProperties: true
-                write_key:
-                  type: string
-      security:
-        - BearerAuth: []
-  /sheet/create:
-    post:
-      operationId: createSheet
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - sheet_name
-              properties:
-                sheet_name:
-                  type: string
-                headers:
-                  type: array
-                  items:
-                    type: string
-      security:
-        - BearerAuth: []
-  /sheet/rename:
-    post:
-      operationId: renameSheet
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - old_name
-                - new_name
-              properties:
-                old_name:
-                  type: string
-                new_name:
-                  type: string
-      security:
-        - BearerAuth: []
-  /sheet/delete:
-    post:
-      operationId: deleteSheet
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - sheet_name
-              properties:
-                sheet_name:
-                  type: string
-      security:
-        - BearerAuth: []
-  /sheet/list_all:
-    get:
-      operationId: listAllSheets
+                  description: Google Drive folder ID for upload
       responses:
-        "200":
-          description: A list of sheet names
+        '200':
+          description: Upload successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: Public Drive link to the uploaded file
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
       security:
         - BearerAuth: []
+
   /upload/screenshot:
     post:
       operationId: uploadScreenshot
@@ -561,6 +356,265 @@ paths:
                     description: Link to the uploaded screenshot on Google Drive
         '500':
           description: Upload failed due to server error
+
+  /sheet/get_item:
+    post:
+      operationId: getInventoryItemBySheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                item_name:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /sheet/get_headers:
+    post:
+      operationId: getSheetHeaders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /sheet/get_all:
+    post:
+      operationId: getStructuredSheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /sheet/get_by_location:
+    post:
+      operationId: getByLocationBySheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                location_id:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /updateSheetHeaders:
+    post:
+      operationId: updateSheetHeaders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                headers:
+                  type: array
+                  items:
+                    type: string
+      security:
+        - BearerAuth: []
+
+  /log:
+    post:
+      operationId: logEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timestamp:
+                  type: string
+                source:
+                  type: string
+                severity:
+                  type: string
+                message:
+                  type: string
+                details:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /habits/update:
+    post:
+      operationId: updateHabit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                habit:
+                  type: string
+                status:
+                  type: string
+                notes:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /goals/update:
+    post:
+      operationId: updateGoal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                goal_name:
+                  type: string
+                target_date:
+                  type: string
+                progress:
+                  type: string
+                status:
+                  type: string
+                priority:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /mental_state/update:
+    post:
+      operationId: updateMentalState
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                mood:
+                  type: string
+                energy:
+                  type: string
+                notes:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /submitJournalV3:
+    post:
+      operationId: submitJournalEntry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sheet_name:
+                  type: string
+                entry_data:
+                  type: object
+                  additionalProperties: true
+                write_key:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /sheet/create:
+    post:
+      operationId: createSheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sheet_name
+              properties:
+                sheet_name:
+                  type: string
+                headers:
+                  type: array
+                  items:
+                    type: string
+      security:
+        - BearerAuth: []
+
+  /sheet/rename:
+    post:
+      operationId: renameSheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - old_name
+                - new_name
+              properties:
+                old_name:
+                  type: string
+                new_name:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /sheet/delete:
+    post:
+      operationId: deleteSheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sheet_name
+              properties:
+                sheet_name:
+                  type: string
+      security:
+        - BearerAuth: []
+
+  /sheet/list_all:
+    get:
+      operationId: listAllSheets
+      responses:
+        "200":
+          description: A list of sheet names
+      security:
+        - BearerAuth: []
+
 securitySchemes:
   BearerAuth:
     type: http

@@ -4,6 +4,7 @@ import gspread
 import os
 import json
 import logging
+import base64
 from functools import wraps
 
 from googleapiclient.discovery import build
@@ -405,6 +406,26 @@ def get_by_location():
             return jsonify(result), 200
         else:
             return jsonify({"error": "No matching unified_log_id found"}), 404
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+        
+@app.route("/upload/base64", methods=["POST"])
+@require_write_key
+def upload_base64_screenshot():
+    try:
+        data = request.get_json(force=True)
+        base64_data = data.get("base64_data")
+        filename = data.get("filename") or f"screenshot-{datetime.now().strftime('%Y%m%d-%H%M%S')}.png"
+        folder_id = data.get("folder_id") or os.environ.get("DRIVE_FOLDER_ID")
+
+        if not base64_data:
+            return jsonify({"error": "Missing base64_data"}), 400
+
+        file_bytes = base64.b64decode(base64_data)
+        link = upload_screenshot_to_drive(file_bytes, filename, folder_id)
+
+        return jsonify({"url": link}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
