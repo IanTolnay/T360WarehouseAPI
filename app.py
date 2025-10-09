@@ -111,7 +111,9 @@ def upload_screenshot():
         # Auto-name file if none provided
         timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
         filename = request.form.get("filename") or f"screenshot-{timestamp}.png"
-        folder_id = os.environ.get("DRIVE_FOLDER_ID")
+
+        # ✅ Use folder_id from form or fallback to default
+        folder_id = request.form.get("folder_id") or os.environ.get("DRIVE_FOLDER_ID")
 
         link = upload_screenshot_to_drive(file_bytes, filename, folder_id)
         return jsonify({"url": link}), 200
