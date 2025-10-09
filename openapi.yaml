@@ -8,6 +8,10 @@ paths:
   /sheet/write_row:
     post:
       operationId: writeSheetRow
+      summary: Write a row to any sheet in the Inventory_Tracker spreadsheet
+      description: >
+        Inserts or updates a single row in the specified sheet.  
+        Supports all core, warehouse, system, alert, knowledge, analytics, and media headers.
       requestBody:
         required: true
         content:
@@ -17,230 +21,42 @@ paths:
               required:
                 - sheet_name
               properties:
-                # Core
+
+                # === CORE & UNIVERSAL FIELDS ===
                 sheet_name:
                   type: string
-
-                # Journal / Macro Logs
+                  description: Target sheet to write to
                 unified_log_id:
                   type: string
+                  description: Global UUID for each record
                 origin_sheet:
                   type: string
-                title:
-                  type: string
-                summary:
-                  type: string
-                outcome:
-                  type: string
+                  description: Sheet from which the record originated
                 linked_sheets:
                   type: string
+                  description: Comma-separated related sheets
                 linked_log_ids:
                   type: string
-                author:
-                  type: string
-                notes:
-                  type: string
-
-                # Integration / GPT Logs
+                  description: Related Unified Log IDs
                 timestamp:
                   type: string
-                message:
-                  type: string
-                gpt:
-                  type: string
-                context:
-                  type: string
-                event:
-                  type: string
-                action:
-                  type: string
-                result:
-                  type: string
-                details:
-                  type: string
-
-                # Event Triggers
-                trigger_phrase:
-                  type: string
-                detected_by:
-                  type: string
-                target_action:
+                  format: date-time
+                category:
                   type: string
                 tags:
                   type: string
-
-                # Field Definitions
-                field_name:
-                  type: string
-                type:
-                  type: string
-                required:
-                  type: string
-                description:
-                  type: string
-                default:
-                  type: string
-                example:
-                  type: string
-
-                # GPT Verification / Validation
-                test_case:
-                  type: string
-                scenario:
-                  type: string
-                expected_behavior:
-                  type: string
-                actual_behavior:
-                  type: string
-                expected:
-                  type: string
-                validated_output:
-                  type: string
-                validator:
-                  type: string
-                status:
-                  type: string
-                comments:
-                  type: string
-
-                # Schema Change Log
-                sheet_affected:
-                  type: string
-                change_type:
-                  type: string
-                before:
-                  type: string
-                after:
-                  type: string
-                reason:
-                  type: string
-
-                # Prototype Feedback
-                test_context:
-                  type: string
-                observation:
-                  type: string
-                gpt_version:
-                  type: string
-
-                # Model Comparison
-                test_id:
-                  type: string
-                prompt:
-                  type: string
-                response_summary:
-                  type: string
-                score:
-                  type: string
-                reviewer_notes:
-                  type: string
-
-                # Sandbox
-                col_a:
-                  type: string
-                col_b:
-                  type: string
-                col_c:
-                  type: string
-                col_d:
-                  type: string
-                col_e:
-                  type: string
-                col_f:
-                  type: string
-                col_g:
-                  type: string
-                col_h:
-                  type: string
-                col_i:
-                  type: string
-                test_marker:
-                  type: string
-                log_id:
-                  type: string
-                status:
-                  type: string
-                notes:
-                  type: string
-                timestamp:
-                  type: string
                 summary:
                   type: string
-                action:
+                details:
                   type: string
-
-                # Feature Log
-                feature:
+                status:
                   type: string
-                date_added:
-                  type: string
-                related_log_id:
-                  type: string
-
-                # Task Log
-                task:
-                  type: string
-                assigned_to:
-                  type: string
-                due_date:
-                  type: string
+                  description: Record state (Open/Closed/Complete/etc.)
                 priority:
                   type: string
-                linked_log_id:
+                outcome:
                   type: string
-
-                # Issue Queue
-                issue_id:
-                  type: string
-                description:
-                  type: string
-                severity:
-                  type: string
-                date_reported:
-                  type: string
-                logged_by:
-                  type: string
-                resolution_log_id:
-                  type: string
-
-                # Dashboard
-                log_id:
-                  type: string
-                log_type:
-                  type: string
-                next_action:
-                  type: string
-
-                # Daily Summary
-                date:
-                  type: string
-                gpt_notes:
-                  type: string
-                highlights:
-                  type: string
-                next_actions:
-                  type: string
-                linked_logs:
-                  type: string
-
-                # Metrics Tracker
-                logs_created:
-                  type: string
-                errors_logged:
-                  type: string
-                tasks_completed:
-                  type: string
-                open_issues:
-                  type: string
-                comments:
-                  type: string
-
-                # Extra useful fields (future-proofing)
-                category:
-                  type: string
-                owner:
-                  type: string
-                reviewer:
+                outcome_detail:
                   type: string
                 version:
                   type: string
@@ -250,7 +66,193 @@ paths:
                   type: string
                 duration:
                   type: string
-                outcome_detail:
+
+                # === INTEGRATION & EXTERNAL SYSTEMS ===
+                zoho_id:
+                  type: string
+                  description: Linked Zoho Inventory or Desk record
+                ticket_id:
+                  type: string
+                shipment_id:
+                  type: string
+                booking_id:
+                  type: string
+                customer_name:
+                  type: string
+                purchase_order:
+                  type: string
+                sales_order:
+                  type: string
+                carrier:
+                  type: string
+                pickup_date:
+                  type: string
+                  format: date
+                delivery_date:
+                  type: string
+                  format: date
+                rma_number:
+                  type: string
+
+                # === WAREHOUSE OPERATIONS ===
+                item_name:
+                  type: string
+                category:
+                  type: string
+                serial_number:
+                  type: string
+                quantity:
+                  type: number
+                unit_cost:
+                  type: number
+                supplier:
+                  type: string
+                condition:
+                  type: string
+                bay_id:
+                  type: string
+                  description: Physical bay or location ID
+                available_quantity:
+                  type: number
+                reserved_quantity:
+                  type: number
+                last_updated:
+                  type: string
+                  format: date-time
+                assembled_by:
+                  type: string
+                assembly_stage:
+                  type: string
+                task:
+                  type: string
+                assigned_to:
+                  type: string
+                start_time:
+                  type: string
+                  format: date-time
+                end_time:
+                  type: string
+                  format: date-time
+                components:
+                  type: string
+                resolution_log_id:
+                  type: string
+                po_number:
+                  type: string
+                so_number:
+                  type: string
+
+                # === ALERTS & SYSTEM EVENTS ===
+                alert_type:
+                  type: string
+                severity:
+                  type: string
+                triggered_by:
+                  type: string
+                trigger_phrase:
+                  type: string
+                trigger_time:
+                  type: string
+                  format: date-time
+                action:
+                  type: string
+                action_result:
+                  type: string
+                confirmation_status:
+                  type: string
+                resolution_notes:
+                  type: string
+                message:
+                  type: string
+                context:
+                  type: string
+                system_event:
+                  type: string
+                integration_name:
+                  type: string
+                endpoint:
+                  type: string
+                request_payload:
+                  type: string
+                response_code:
+                  type: string
+                response_message:
+                  type: string
+                result:
+                  type: string
+                error_code:
+                  type: string
+
+                # === KNOWLEDGE / TASKS / IMPROVEMENTS ===
+                title:
+                  type: string
+                notes:
+                  type: string
+                suggestion:
+                  type: string
+                impact_level:
+                  type: string
+                due_date:
+                  type: string
+                  format: date
+                guide_title:
+                  type: string
+                steps:
+                  type: string
+                test_case:
+                  type: string
+                scenario:
+                  type: string
+                expected_behavior:
+                  type: string
+                actual_behavior:
+                  type: string
+                validated_output:
+                  type: string
+                expected:
+                  type: string
+                validator:
+                  type: string
+                comments:
+                  type: string
+
+                # === ANALYTICS / DASHBOARD METRICS ===
+                log_type:
+                  type: string
+                logs_created:
+                  type: number
+                errors_logged:
+                  type: number
+                tasks_completed:
+                  type: number
+                open_issues:
+                  type: number
+                shipments_completed:
+                  type: number
+                returns_processed:
+                  type: number
+                average_turnaround_time:
+                  type: string
+                purchase_order_count:
+                  type: number
+                sales_order_count:
+                  type: number
+                highlights:
+                  type: string
+                next_actions:
+                  type: string
+                linked_logs:
+                  type: string
+
+                # === MEDIA / FILE RECORDS ===
+                media_type:
+                  type: string
+                  description: Type of file (photo, screenshot, scan)
+                file_name:
+                  type: string
+                media_url:
+                  type: string
+                description:
                   type: string
       security:
         - BearerAuth: []
