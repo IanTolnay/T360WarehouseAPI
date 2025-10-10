@@ -65,6 +65,18 @@ def detect_folder(filename: str) -> str:
 def upload_file():
     try:
         uploaded_file = request.files.get("file")
+
+        # --- Fallback for when Action sends base64 JSON instead of multipart file ---
+        if not uploaded_file and request.is_json:
+            data = request.get_json(silent=True)
+            base64_data = data.get("file") or data.get("base64_data")
+            filename = data.get("filename", "uploaded_from_gpt.png")
+            if base64_data:
+                from io import BytesIO
+                import base64
+                file_bytes = base64.b64decode(base64_data)
+                uploaded_file = BytesIO(file_bytes)
+                uploaded_file.filename = filename
         if not uploaded_file:
             return jsonify({"error": "No file provided"}), 400
 
